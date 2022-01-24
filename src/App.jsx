@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
@@ -13,36 +13,41 @@ function App() {
     "jigsaw",
     "jinx",
   ]);
-  const [usedLetters, setUsedLetters] = useState([])
+  const [usedLetters, setUsedLetters] = useState([]);
+  const [chosenWord, setChosenWord] = useState("");
 
   //pick a random word from words
   //find the length of the word
-  function getRandomWord(){
-    return words[Math.floor(Math.random()*words.length)]
+  function getRandomWord() {
+    return words[Math.floor(Math.random() * words.length)];
   }
-  
-  
-  //for every letter display a _
-  function displayWord(word){
-    //make the word an array
-    let splitWord = word.split('')
-    
-    const arrToDisplay= splitWord.map(letter=>{
-      if(usedLetters.includes(letter)){
-        return <span>{letter}</span>
-      }
-      return <span>_</span>
 
-    })
-    return arrToDisplay
+  //set a random word when game starts
+  useEffect(() => setChosenWord(getRandomWord()), []);
+
+  //for every letter display a _
+  function displayWord() {
+    //make the word an array of letter
+    let splitWord = chosenWord.split("");
+    //for every letter check if user has pressed that letter
+    //if he has, display the letter
+    //else display _
+    const arrToDisplay = splitWord.map((letter) => {
+      if(usedLetters.includes(letter)){
+      return <span>{letter}</span>;
+      }
+      return <span>_</span>;
+    });
+    return arrToDisplay;
   }
   //add eventlistener to the document for every key input
   //if the key pressed is contained in the word, replace _ with the key
 
-
-  return <>
-  {displayWord(getRandomWord())}
-  </>;
+  return (
+    <>
+      {displayWord()}
+    </>
+  );
 }
 
 export default App;
