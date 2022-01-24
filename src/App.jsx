@@ -12,15 +12,23 @@ function App() {
     //if the key length is 1 and
     //the key is an alphabet letter,
     //add the key to the used letters
+console.log('handler split word: '+chosenWord.split(""))
+    chosenWord !== "" &&
+      chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
+      setGameOver(true);
 
+    tries === 5 && setGameOver(true);
     //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
-    if (!gameOver && e.key.length === 1 && /[a-z]/.test(e.key.toLowerCase())) {
-      console.log(usedLetters); //this logs empty array
-
-      if (usedLetters.includes(e.key)) {
+    if (
+      !gameOver &&
+      e.key.length === 1 &&
+      /[a-z]/.test(e.key.toLowerCase()) &&
+      !usedLetters.includes(e.key)
+    ) {
+      // console.log(usedLetters); //this logs empty array
+      setUsedLetters((prevLetters) => [...prevLetters, e.key]);
+      if (!chosenWord.split("").includes(e.key)) {
         setTries((prevTries) => prevTries + 1); // this code never runs
-      } else {
-        setUsedLetters((prevLetters) => [...prevLetters, e.key]);
       }
     } else {
       console.log("nothing");
@@ -33,16 +41,18 @@ function App() {
     return data[Math.floor(Math.random() * data.length)];
   }
 
-  const gameLost = tries === 5;
-  useEffect(() => {
-    console.log("started check if lost");
-    chosenWord !== "" &&
-      chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
-      setGameOver(true);
+  function gameLost() {
+    if (tries === 5) return true;
+  }
+  // useEffect(() => {
+  //   console.log("started check if lost");
+  //   chosenWord !== "" &&
+  //     chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
+  //     setGameOver(true);
 
-    tries === 5 && setGameOver(true);
-    console.log("ended check if lost");
-  }, [usedLetters, tries]);
+  //   tries === 5 && setGameOver(true);
+  //   console.log("ended check if lost");
+  // }, [usedLetters, tries]);
 
   function newGame() {
     setTries(0);
@@ -53,20 +63,20 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("started add event listener");
+    // console.log("started add event listener");
     document.addEventListener("keyup", keyPressHandler);
 
     return () => {
       document.removeEventListener("keyup", keyPressHandler);
-      console.log("ended add event listener");
+      // console.log("ended add event listener");
     };
   }, [usedLetters]);
 
   //set a random word when game starts
   useEffect(() => {
-    console.log("started set random word");
+    // console.log("started set random word");
     setChosenWord(getRandomWord());
-    console.log("ended set random word");
+    // console.log("ended set random word");
   }, []);
 
   function displayWord() {
@@ -75,6 +85,7 @@ function App() {
     //for every letter check if user has pressed that letter
     //if he has, display the letter
     //else display _
+    console.log('displayword function split word:  '+splitWord)
     const arrToDisplay = splitWord.map((letter, index) => {
       return (
         <span key={index}>{usedLetters.includes(letter) ? letter : "_"}</span>
