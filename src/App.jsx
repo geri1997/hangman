@@ -12,7 +12,7 @@ function App() {
     //if the key length is 1 and
     //the key is an alphabet letter,
     //add the key to the used letters
-console.log('handler split word: '+chosenWord.split(""))
+    console.log("handler split word: " + chosenWord.split(""));
     chosenWord !== "" &&
       chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
       setGameOver(true);
@@ -70,7 +70,7 @@ console.log('handler split word: '+chosenWord.split(""))
       document.removeEventListener("keyup", keyPressHandler);
       // console.log("ended add event listener");
     };
-  }, [usedLetters,chosenWord,usedLetters,tries]);
+  }, [usedLetters, chosenWord, usedLetters, tries]);
 
   //set a random word when game starts
   useEffect(() => {
@@ -85,7 +85,7 @@ console.log('handler split word: '+chosenWord.split(""))
     //for every letter check if user has pressed that letter
     //if he has, display the letter
     //else display _
-    console.log('displayword function split word:  '+splitWord)
+    console.log("displayword function split word:  " + splitWord);
     const arrToDisplay = splitWord.map((letter, index) => {
       return (
         <span key={index}>{usedLetters.includes(letter) ? letter : "_"}</span>
@@ -99,6 +99,10 @@ console.log('handler split word: '+chosenWord.split(""))
   return (
     <>
       {displayWord()}
+      <h4>
+        Wrong guesses :{" "}
+        {usedLetters.filter((letter) => !chosenWord.split("").includes(letter))}
+      </h4>
       <h4>Number of tries: {tries} out of 5</h4>
       {gameOver && (
         <>
