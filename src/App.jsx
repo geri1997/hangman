@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { data } from "./data";
 
 function App() {
-  const [words, setWords] = useState([
-    "jackpot",
-    "jaundice",
-    "jawbreaker",
-    "jaywalk",
-    "jazziest",
-    "jazzy",
-    "jelly",
-    "jigsaw",
-    "jinx",
-  ]);
   const [usedLetters, setUsedLetters] = useState([]);
   const [chosenWord, setChosenWord] = useState("");
-  const [hasWon, setHasWon] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [tries, setTries] = useState(0);
+  const [usedWords, setUsedWords] = useState([]);
 
   function getRandomWord() {
     //pick a random word from words
     //find the length of the word
-    return words[Math.floor(Math.random() * words.length)];
+    return data[Math.floor(Math.random() * data.length)];
   }
 
+  const gameLost = tries === 5;
   useEffect(() => {
+    chosenWord !== "" &&
+      chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
+      setGameOver(true);
 
-    chosenWord!==''&&chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
-      setHasWon(true);
+    tries === 5 && setGameOver(true);
   }, [usedLetters]);
+
+  function newGame() {
+    setTries(0);
+    setUsedWords((prevUsedWords) => [...prevUsedWords, chosenWord]);
+    setUsedLetters([]);
+    setGameOver(false);
+    setChosenWord(getRandomWord());
+  }
 
   function keyPressHandler(e) {
     //what happens when you press a key
@@ -36,12 +39,16 @@ function App() {
     //add the key to the used letters
 
     //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
+    if (!gameOver && e.key.length === 1 && /[a-z]/.test(e.key.toLowerCase())) {
+      console.log(usedLetters);
 
-    e.key.length === 1 &&
-      /[a-zA-Z]/.test(e.key) &&
-      setUsedLetters((prevLetters) => [...prevLetters, e.key.toLowerCase()]);
+      if (usedLetters.includes(e.key)) {
+        setTries((prevTries) => prevTries + 1);
+      } else {
+        setUsedLetters((prevLetters) => [...prevLetters, e.key]);
+      }
+    }
   }
-
 
   useEffect(() => {
     document.addEventListener("keyup", keyPressHandler);
@@ -73,7 +80,13 @@ function App() {
   return (
     <>
       {displayWord()}
-      {hasWon && <h2>You Won</h2>}
+      <h4>Number of tries: {tries} out of 5</h4>
+      {gameOver && (
+        <>
+          <h2>{gameLost ? "You Lost" : "You Won"}</h2>
+          <button onClick={newGame}>New Game</button>
+        </>
+      )}
     </>
   );
 }
