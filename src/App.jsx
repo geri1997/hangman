@@ -24,7 +24,7 @@ function App() {
   }
 
   useEffect(() => {
-    
+
     chosenWord!==''&&chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
       setHasWon(true);
   }, [usedLetters]);
@@ -38,9 +38,10 @@ function App() {
     //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
 
     e.key.length === 1 &&
-      /[a-z]/.test(e.key) &&
-      setUsedLetters((prevLetters) => [...prevLetters, e.key]);
+      /[a-zA-Z]/.test(e.key) &&
+      setUsedLetters((prevLetters) => [...prevLetters, e.key.toLowerCase()]);
   }
+
 
   useEffect(() => {
     document.addEventListener("keyup", keyPressHandler);
@@ -48,7 +49,7 @@ function App() {
     return () => {
       document.removeEventListener("keyup", keyPressHandler);
     };
-  }, [hasWon]);
+  }, []);
 
   //set a random word when game starts
   useEffect(() => setChosenWord(getRandomWord()), []);
