@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { data } from "./data";
+import JSConfetti from 'js-confetti'
+
+
 
 function App() {
   const [chosenWord, setChosenWord] = useState("");
@@ -9,6 +12,10 @@ function App() {
   const [usedWords, setUsedWords] = useState([]);
   const [usedLetters, setUsedLetters] = useState([]);
   const [showError, setShowError] = useState(false);
+
+  const jsConfetti = new JSConfetti()
+
+  
 
   function keyPressHandler(e) {
     //if the key length is 1 and
@@ -52,6 +59,7 @@ function App() {
 
   function gameLost() {
     if (tries === 5) return true;
+    jsConfetti.addConfetti()
     return false;
   }
 
