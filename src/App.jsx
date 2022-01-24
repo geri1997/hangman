@@ -23,13 +23,23 @@ function App() {
     return words[Math.floor(Math.random() * words.length)];
   }
 
+  useEffect(() => {
+    
+    chosenWord!==''&&chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
+      setHasWon(true);
+  }, [usedLetters]);
+
   function keyPressHandler(e) {
     //what happens when you press a key
+    //if the key length is 1 and
+    //the key is an alphabet letter
     //add the key to the used letters
 
+    //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
+
     e.key.length === 1 &&
-      /[a-zA-Z]/.test(e.key) &&
-      setUsedLetters(prevLetters=>[...prevLetters, e.key]);
+      /[a-z]/.test(e.key) &&
+      setUsedLetters((prevLetters) => [...prevLetters, e.key]);
   }
 
   useEffect(() => {
@@ -59,7 +69,12 @@ function App() {
   //add eventlistener to the document for every key input
   //if the key pressed is contained in the word, replace _ with the key
 
-  return <>{displayWord()}</>;
+  return (
+    <>
+      {displayWord()}
+      {hasWon && <h2>You Won</h2>}
+    </>
+  );
 }
 
 export default App;
