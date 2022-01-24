@@ -8,11 +8,18 @@ function App() {
   const [tries, setTries] = useState(0);
   const [usedWords, setUsedWords] = useState([]);
   const [usedLetters, setUsedLetters] = useState([]);
+  const [showError, setShowError] = useState(false);
+
   function keyPressHandler(e) {
     //if the key length is 1 and
     //the key is an alphabet letter,
     //add the key to the used letters
 
+    if (usedLetters.includes(e.key)) {
+      setShowError(true);
+
+      setTimeout((e) => setShowError(false), 1000);
+    }
     //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
     if (
       !gameOver &&
@@ -22,7 +29,7 @@ function App() {
     ) {
       setUsedLetters((prevLetters) => [...prevLetters, e.key]);
       if (!chosenWord.split("").includes(e.key)) {
-        setTries((prevTries) => prevTries + 1); // this code never runs
+        setTries((prevTries) => prevTries + 1);
       }
     }
   }
@@ -49,11 +56,18 @@ function App() {
   }
 
   function newGame() {
+    setUsedWords((prevUsedWords) => {
+      console.log("usedWords");
+      return [...prevUsedWords, chosenWord];
+    });
+
+    setChosenWord((prevWord) => {
+      console.log("chosenWord:");
+      return getRandomWord();
+    });
     setTries(0);
-    setUsedWords((prevUsedWords) => [...prevUsedWords, chosenWord]);
     setUsedLetters([]);
     setGameOver(false);
-    setChosenWord(getRandomWord());
   }
 
   useEffect(() => {
@@ -97,18 +111,23 @@ function App() {
 
   return (
     <>
-      {displayWord()}
-      <h4>
-        Wrong guesses :{" "}
-        {usedLetters.filter((letter) => !chosenWord.split("").includes(letter))}
-      </h4>
-      <h4>Number of tries: {tries} out of 5</h4>
-      {gameOver && (
-        <>
-          <h2>{gameLost() ? "You Lost" : "You Won"}</h2>
-          <button onClick={newGame}>New Game</button>
-        </>
-      )}
+      <div className={`game ${showError ? "shaker": ''}`}>
+        <div className="word">{displayWord()}</div>
+        {showError&&<h4 className="error">Letter already pressed</h4>}
+        <h4>
+          Wrong guesses :{" "}
+          {usedLetters.filter(
+            (letter) => !chosenWord.split("").includes(letter)
+          )}
+        </h4>
+        <h4>Number of tries: {tries} out of 5</h4>
+        {gameOver && (
+          <>
+            <h2>{gameLost() ? "You Lost" : "You Won"}</h2>
+            <button onClick={newGame}>New Game</button>
+          </>
+        )}
+      </div>
     </>
   );
 }

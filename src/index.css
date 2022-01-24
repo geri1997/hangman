@@ -11,3 +11,30 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.word{
+  text-align: center;
+  display: grid;
+  grid-auto-flow: column;
+}
+span{
+  font-size: 1.5rem;
+}
+.error{
+  color: red;
+}
+
+#root{
+place-content: center;
+display: grid;
+height: 100vh;
+}
+
+.shaker{
+  animation: shake 0.15s 5 alternate linear;
+
+}
+
+
+
+@keyframes shake { from { transform: translateX(10px); } to { transform: translateX(-10px); }  }
