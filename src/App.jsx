@@ -3,11 +3,29 @@ import "./App.css";
 import { data } from "./data";
 
 function App() {
-  const [usedLetters, setUsedLetters] = useState([]);
   const [chosenWord, setChosenWord] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [tries, setTries] = useState(0);
   const [usedWords, setUsedWords] = useState([]);
+  const [usedLetters, setUsedLetters] = useState([]);
+  function keyPressHandler(e) {
+    //if the key length is 1 and
+    //the key is an alphabet letter,
+    //add the key to the used letters
+
+    //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
+    if (!gameOver && e.key.length === 1 && /[a-z]/.test(e.key.toLowerCase())) {
+      console.log(usedLetters); //this logs empty array
+
+      if (usedLetters.includes(e.key)) {
+        setTries((prevTries) => prevTries + 1); // this code never runs
+      } else {
+        setUsedLetters((prevLetters) => [...prevLetters, e.key]);
+      }
+    } else {
+      console.log("nothing");
+    }
+  }
 
   function getRandomWord() {
     //pick a random word from words
@@ -17,12 +35,14 @@ function App() {
 
   const gameLost = tries === 5;
   useEffect(() => {
+    console.log("started check if lost");
     chosenWord !== "" &&
       chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
       setGameOver(true);
 
     tries === 5 && setGameOver(true);
-  }, [usedLetters]);
+    console.log("ended check if lost");
+  }, [usedLetters, tries]);
 
   function newGame() {
     setTries(0);
@@ -32,34 +52,22 @@ function App() {
     setChosenWord(getRandomWord());
   }
 
-  function keyPressHandler(e) {
-    //what happens when you press a key
-    //if the key length is 1 and
-    //the key is an alphabet letter
-    //add the key to the used letters
-
-    //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
-    if (!gameOver && e.key.length === 1 && /[a-z]/.test(e.key.toLowerCase())) {
-      console.log(usedLetters);
-
-      if (usedLetters.includes(e.key)) {
-        setTries((prevTries) => prevTries + 1);
-      } else {
-        setUsedLetters((prevLetters) => [...prevLetters, e.key]);
-      }
-    }
-  }
-
   useEffect(() => {
+    console.log("started add event listener");
     document.addEventListener("keyup", keyPressHandler);
 
     return () => {
       document.removeEventListener("keyup", keyPressHandler);
+      console.log("ended add event listener");
     };
-  }, []);
+  }, [usedLetters]);
 
   //set a random word when game starts
-  useEffect(() => setChosenWord(getRandomWord()), []);
+  useEffect(() => {
+    console.log("started set random word");
+    setChosenWord(getRandomWord());
+    console.log("ended set random word");
+  }, []);
 
   function displayWord() {
     //make the word an array of letter
