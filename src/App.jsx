@@ -29,7 +29,7 @@ function App() {
 
     e.key.length === 1 &&
       /[a-zA-Z]/.test(e.key) &&
-      setUsedLetters([...usedLetters, e.key]);
+      setUsedLetters(prevLetters=>[...prevLetters, e.key]);
   }
 
   useEffect(() => {
