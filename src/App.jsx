@@ -17,7 +17,7 @@ console.log('handler split word: '+chosenWord.split(""))
       chosenWord.split("").every((letter) => usedLetters.includes(letter)) &&
       setGameOver(true);
 
-    tries === 5 && setGameOver(true);
+    tries === 4 && setGameOver(true);
     //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
     if (
       !gameOver &&
@@ -70,7 +70,7 @@ console.log('handler split word: '+chosenWord.split(""))
       document.removeEventListener("keyup", keyPressHandler);
       // console.log("ended add event listener");
     };
-  }, [usedLetters]);
+  }, [usedLetters,chosenWord,usedLetters,tries]);
 
   //set a random word when game starts
   useEffect(() => {
