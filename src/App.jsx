@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { data } from "./data";
-import JSConfetti from 'js-confetti'
-
-
+import JSConfetti from "js-confetti";
+import Confetti from "react-confetti/";
 
 function App() {
   const [chosenWord, setChosenWord] = useState("");
@@ -13,30 +12,28 @@ function App() {
   const [usedLetters, setUsedLetters] = useState([]);
   const [showError, setShowError] = useState(false);
 
-  const jsConfetti = new JSConfetti()
-
-  
+  const jsConfetti = new JSConfetti();
 
   function keyPressHandler(e) {
     //if the key length is 1 and
     //the key is an alphabet letter,
     //add the key to the used letters
+    if (!gameOver) {
+      if (usedLetters.includes(e.key)) {
+        setShowError(true);
 
-    if (usedLetters.includes(e.key)) {
-      setShowError(true);
-
-      setTimeout((e) => setShowError(false), 1000);
-    }
-    //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
-    if (
-      !gameOver &&
-      e.key.length === 1 &&
-      /[a-z]/.test(e.key.toLowerCase()) &&
-      !usedLetters.includes(e.key)
-    ) {
-      setUsedLetters((prevLetters) => [...prevLetters, e.key]);
-      if (!chosenWord.split("").includes(e.key)) {
-        setTries((prevTries) => prevTries + 1);
+        setTimeout((e) => setShowError(false), 1000);
+      }
+      //this stops the user from pressing space,ctrl,alt,shift,numbers,etc
+      if (
+        e.key.length === 1 &&
+        /[a-z]/.test(e.key.toLowerCase()) &&
+        !usedLetters.includes(e.key)
+      ) {
+        setUsedLetters((prevLetters) => [...prevLetters, e.key]);
+        if (!chosenWord.split("").includes(e.key)) {
+          if(tries<5)setTries((prevTries) => prevTries + 1);
+        }
       }
     }
   }
@@ -59,7 +56,7 @@ function App() {
 
   function gameLost() {
     if (tries === 5) return true;
-    jsConfetti.addConfetti()
+    jsConfetti.addConfetti();
     return false;
   }
 
@@ -84,7 +81,7 @@ function App() {
     return () => {
       document.removeEventListener("keyup", keyPressHandler);
     };
-  }, [usedLetters, chosenWord, usedLetters, tries]);
+  }, [usedLetters, chosenWord, usedLetters, tries,gameOver]);
 
   //set a random word when game starts
   useEffect(() => {
@@ -100,7 +97,9 @@ function App() {
       //else display _
       const arrToDisplay = splitWord.map((letter, index) => {
         return (
-          <span key={index}>{usedLetters.includes(letter) ? letter : "_"}</span>
+          <span key={index}>
+            {usedLetters.includes(letter) || gameOver ? letter : "_"}
+          </span>
         );
       });
       return arrToDisplay;
@@ -119,9 +118,9 @@ function App() {
 
   return (
     <>
-      <div className={`game ${showError ? "shaker": ''}`}>
+      <div className={`game ${showError ? "shaker" : ""}`}>
         <div className="word">{displayWord()}</div>
-        {showError&&<h4 className="error">Letter already pressed</h4>}
+        {showError && <h4 className="error">Letter already pressed</h4>}
         <h4>
           Wrong guesses :{" "}
           {usedLetters.filter(
